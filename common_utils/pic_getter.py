@@ -1,4 +1,4 @@
-from common_utils import Point
+from common_utils import Point, Distr
 
 import numpy as np
 import random
@@ -10,13 +10,14 @@ from math import ceil
 class Pic:
     def __init__(self):
         dir_path = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.join(dir_path, './MNIST')
+        path = os.path.join(dir_path, '../MNIST')
         self.dataset = datasets.MNIST(root=path, train=True, download=True, transform=None)
         class_of_pisc = 3
         for element in self.dataset:
             if element[1] == class_of_pisc:
                 self.img = np.array(element[0])
                 break
+        self.distr = Distr(min=0, max=255, sample=self._gather_bio1_sample())
 
     def show(self):
         plt.imshow(self.img, cmap='gray', interpolation='none')
@@ -29,6 +30,12 @@ class Pic:
                 points_list.append(Point(x=x, y=y))
         return points_list
 
+    def get_mean(self):
+        return self.distr.get_mean()
+
+    def get_sample_b1(self):
+        return self.distr.sample
+
     def get_bright_in_point(self, point):
         return self.img[point.y][point.x]
 
@@ -38,12 +45,6 @@ class Pic:
         center_x = ceil(X/2)
         center_y = ceil(Y / 2)
         return Point(x=center_x, y=center_y)
-
-    def get_bio1_sample(self, sample_size=80):
-        full_sample = self.img.ravel()
-        S_1 = [random.choice(full_sample) for _ in range(sample_size)]
-        return S_1
-
 
     def draw_to_ax(self, ax):
         ax.imshow(self.img, cmap='gray', interpolation='none')
@@ -59,6 +60,11 @@ class Pic:
                 points.append(Point(x=x, y=y))
         return points
 
+    def _gather_bio1_sample(self, sample_size=80):
+        full_sample = self.img.ravel()
+        S_1 = [random.choice(full_sample) for _ in range(sample_size)]
+        return S_1
+
 
 if __name__ == '__main__':
     pic = Pic()
@@ -71,7 +77,7 @@ if __name__ == '__main__':
     plt.show()
     plt.close(fig)
 
-    sample = pic.get_bio1_sample(177)
+    sample = pic.get_sample_b1()
     plt.hist(sample)
     plt.show()
 

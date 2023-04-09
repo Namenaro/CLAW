@@ -1,5 +1,4 @@
-from common_utils import Point, IdsGenerator
-from pic_getter import Pic
+from common_utils import IdsGenerator
 
 from copy import deepcopy
 

@@ -1,9 +1,9 @@
-from pic_getter import Pic
+from common_utils import Pic
 from common_utils import Point
 
 import matplotlib.pyplot as plt
 import math
-import time
+
 
 class HandGeneratedTraj:
     def __init__(self, pic):
@@ -39,9 +39,9 @@ class CoordSelector:
         self.result_radiuses = []
 
     def onclick(self, event):
-        #print('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f' %
-        #      ('double' if event.dblclick else 'single', event.button,
-        #       event.x, event.y, event.xdata, event.ydata))
+        print('%s click: button=%d, x=%d, y=%d, xdata=%f, ydata=%f' %
+              ('double' if event.dblclick else 'single', event.button,
+               event.x, event.y, event.xdata, event.ydata))
         if event.button != 1:
             #time.sleep(2)
             plt.close()
