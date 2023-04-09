@@ -1,14 +1,18 @@
-from common_utils import IdsGenerator
+from common_utils import IdsGenerator, Pic
 
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import matplotlib
+import numpy as np
 from copy import deepcopy
 
 class DefaultPredictionsGenerator:
-    def __init__(self, pic_point_list, mean_in_pic):
-        self.pic_point_list = pic_point_list
+    def __init__(self, pic):
+        self.pic = pic
         self.regions_dict = {}
         self.ids_generation = IdsGenerator()
         initial_reg_id = self.ids_generation.generate_id()
-        self.regions_dict[initial_reg_id]=Region(pic_point_list, mean_in_pic)
+        self.regions_dict[initial_reg_id] = Region(pic.get_coords_list(), pic.get_mean())
 
 
     def get_mean_in_region(self, points_list):
@@ -29,6 +33,15 @@ class DefaultPredictionsGenerator:
                                       reg_id_to_divide=reg_id,
                                       reg_mean=region_to_divide.mean,
                                       fact_mean=real_mean)
+
+    def draw(self):
+        numpy_pic = np.zeros(shape=self.pic.img.shape)
+        new_pic = Pic(numpy_pic)
+        fig, ax = plt.subplots()
+        for _, region in self.regions_dict.items():
+            region.draw_to_pic(new_pic)
+        new_pic.draw_to_ax(ax)
+        plt.show()
 
     def _handle_intersection(self, intersecton, outer, reg_id_to_divide, reg_mean, fact_mean):
         # создаем регион-пересечение:
@@ -64,6 +77,7 @@ class DefaultPredictionsGenerator:
             if region.has_point(point):
                 return region.mean
 
+
 class Region:
     def __init__(self, points, mean):
         self.points = points
@@ -76,3 +90,13 @@ class Region:
 
     def get_mass(self):
         return len(self.points)+self.mean
+
+    def draw_to_pic(self, pic):
+        for point in self.points:
+            pic.set_point_color(point, color=self.mean)
+
+
+if __name__ == '__main__':
+    pic = Pic()
+    prediction_gen = DefaultPredictionsGenerator(pic)
+    prediction_gen.draw()
