@@ -48,6 +48,17 @@ class Pic:
     def draw_to_ax(self, ax):
         ax.imshow(self.img, cmap='gray', interpolation='none')
 
+    def get_point_cloud(self, center_point, radius):
+        points = []
+
+        rect_x = int(center_point.x - radius / 2)
+        rect_y = int(center_point.y - radius / 2)
+
+        for y in range(rect_y, rect_y + radius):
+            for x in range(rect_x, rect_x + radius):
+                points.append(Point(x=x, y=y))
+        return points
+
 
 if __name__ == '__main__':
     pic = Pic()
