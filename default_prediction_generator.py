@@ -1,4 +1,4 @@
-from common_utils import IdsGenerator, Pic
+from common_utils import IdsGenerator, Pic, Point
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
@@ -23,13 +23,13 @@ class DefaultPredictionsGenerator:
         return mean
 
     def add_fact(self, points_list, real_mean):
-        current_reg_ids = deepcopy(self.regions_dict.keys())
+        current_reg_ids = deepcopy(list(self.regions_dict.keys()))
         for reg_id in current_reg_ids:
             region_to_divide = self.regions_dict[reg_id]
             intersecton, outer = self._get_AandB_AnoB(region_to_divide.points, point_cloudB=points_list)
             if len(intersecton) == 0:
                 continue
-            self._handle_intersection(self, intersecton, outer,
+            self._handle_intersection(intersecton, outer,
                                       reg_id_to_divide=reg_id,
                                       reg_mean=region_to_divide.mean,
                                       fact_mean=real_mean)
@@ -41,6 +41,10 @@ class DefaultPredictionsGenerator:
         for _, region in self.regions_dict.items():
             region.draw_to_pic(new_pic)
         new_pic.draw_to_ax(ax)
+
+        # фон
+        cm = plt.get_cmap('Greens')
+        ax.imshow(self.pic.img, cmap=cm, alpha=0.1)
         plt.show()
 
     def _handle_intersection(self, intersecton, outer, reg_id_to_divide, reg_mean, fact_mean):
@@ -100,3 +104,18 @@ if __name__ == '__main__':
     pic = Pic()
     prediction_gen = DefaultPredictionsGenerator(pic)
     prediction_gen.draw()
+
+    point = pic.get_center_point()
+    radius = 4
+    points_cloud = pic.get_point_cloud(point, radius=radius)
+    mean_in_cloud = pic.get_mean_color_in_point_cloud(points_cloud)
+    prediction_gen.add_fact(points_cloud, real_mean=mean_in_cloud)
+    prediction_gen.draw()
+
+    point = point + Point(0,3)
+    radius = 8
+    points_cloud = pic.get_point_cloud(point, radius=radius)
+    mean_in_cloud = pic.get_mean_color_in_point_cloud(points_cloud)
+    prediction_gen.add_fact(points_cloud, real_mean=mean_in_cloud)
+    prediction_gen.draw()
+

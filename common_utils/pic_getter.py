@@ -80,7 +80,13 @@ class Pic:
         return X, Y
 
     def set_point_color(self, point, color):
-        self.img[point.y] [point.x]=color
+        self.img[point.y][point.x] = color
+
+    def get_mean_color_in_point_cloud(self, point_cloud):
+        mass = 0
+        for point in point_cloud:
+            mass += self.get_bright_in_point(point)
+        return mass/len(point_cloud)
 
 
 if __name__ == '__main__':
