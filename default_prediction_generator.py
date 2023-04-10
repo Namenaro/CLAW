@@ -81,11 +81,17 @@ class DefaultPredictionsGenerator:
         num_intersections = len(sizes_of_intersections)
         unnormed_masses_of_intersections = [sizes_of_intersections[i]*means_of_intersected_regions[i]
                                             for i in range(num_intersections)]
+        if fact_mass == 0:
+            return None
         koeff = sum(unnormed_masses_of_intersections)/fact_mass
+
         return koeff
 
     def _kalc_means_for_all_intersections(self, koeff, means_of_intersected_regions):
-        means_for_all_intersections = [means_of_intersected_regions[i]/koeff for i in range(len(means_of_intersected_regions))]
+        N = len(means_of_intersected_regions)
+        if koeff is None:
+            return [0]*N
+        means_for_all_intersections = [means_of_intersected_regions[i]/koeff for i in range(N)]
         return means_for_all_intersections
 
     def _kals_means_for_all_outer_regions(self, means_for_all_intersections, outers_lens, inners_lens,
