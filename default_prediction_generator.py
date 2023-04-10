@@ -32,8 +32,8 @@ class DefaultPredictionsGenerator:
         new_pic.draw_to_ax(ax)
 
         # фон
-        #cm = plt.get_cmap('Greens')
-        #ax.imshow(self.pic.img, cmap=cm, alpha=0.1)
+        cm = plt.get_cmap('Greens')
+        ax.imshow(self.pic.img, cmap=cm, alpha=0.1)
         return fig
 
     def add_fact(self, fact_points, fact_mean):
@@ -43,9 +43,13 @@ class DefaultPredictionsGenerator:
         sizes_of_outers = [len(points_outer) for points_outer in outers_points]
         fact_mass = fact_mean*len(fact_points)
 
+        unnormed_ratios = [sizes_of_intersections[i]/(len(fact_points)) for i in range(len(region_ids))]
+        divider = sum(unnormed_ratios)
+        ratios = [unnormed_ratios[i]/divider for i in range(len(unnormed_ratios))]
         koeff = self._kalc_koeff(fact_mass, sizes_of_intersections=sizes_of_intersections,
-                                 means_of_intersected_regions=means_of_intersected_regions)
-        means_for_all_intersections = self._kalc_means_for_all_intersections(koeff, means_of_intersected_regions)
+                                 means_of_intersected_regions=means_of_intersected_regions,
+                                 ratios=ratios)
+        means_for_all_intersections = self._kalc_means_for_all_intersections(koeff, means_of_intersected_regions, ratios=ratios)
 
         means_for_all_outers = self._kals_means_for_all_outer_regions(means_for_all_intersections=means_for_all_intersections,
                                                                       outers_lens=sizes_of_outers,
@@ -77,9 +81,9 @@ class DefaultPredictionsGenerator:
             outers_points.append(outer)
         return region_ids, inners_points, outers_points
 
-    def _kalc_koeff(self, fact_mass, sizes_of_intersections, means_of_intersected_regions):
+    def _kalc_koeff(self, fact_mass, sizes_of_intersections, means_of_intersected_regions, ratios):
         num_intersections = len(sizes_of_intersections)
-        unnormed_masses_of_intersections = [sizes_of_intersections[i]*means_of_intersected_regions[i]
+        unnormed_masses_of_intersections = [sizes_of_intersections[i]*means_of_intersected_regions[i]*ratios[i]
                                             for i in range(num_intersections)]
         if fact_mass == 0:
             return None
@@ -87,11 +91,11 @@ class DefaultPredictionsGenerator:
 
         return koeff
 
-    def _kalc_means_for_all_intersections(self, koeff, means_of_intersected_regions):
+    def _kalc_means_for_all_intersections(self, koeff, means_of_intersected_regions, ratios):
         N = len(means_of_intersected_regions)
         if koeff is None:
             return [0]*N
-        means_for_all_intersections = [means_of_intersected_regions[i]/koeff for i in range(N)]
+        means_for_all_intersections = [means_of_intersected_regions[i]* ratios[i]/koeff for i in range(N)]
         return means_for_all_intersections
 
     def _kals_means_for_all_outer_regions(self, means_for_all_intersections, outers_lens, inners_lens,

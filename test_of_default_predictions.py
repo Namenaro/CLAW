@@ -18,8 +18,6 @@ if __name__ == '__main__':
     logger.add_fig(fig)
 
     for i in range(len(hand_creator_of_ex.radiuses)):
-        if i==7:
-            print(0)
         radius = hand_creator_of_ex.radiuses[i]
         point = hand_creator_of_ex.points[i]
 
@@ -29,6 +27,7 @@ if __name__ == '__main__':
         fig = prediction_gen.draw()
         logger.add_text(str(len(prediction_gen.regions_dict)) + " regions:" + prediction_gen.print_means())
         fig.savefig("pic"+ str(i))
+        plt.show()
         logger.add_fig(fig)
 
 
