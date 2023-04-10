@@ -45,7 +45,7 @@ class DefaultPredictionsGenerator:
         # фон
         cm = plt.get_cmap('Greens')
         ax.imshow(self.pic.img, cmap=cm, alpha=0.1)
-        plt.show()
+        return fig
 
     def _handle_intersection(self, intersecton, outer, reg_id_to_divide, reg_mean, fact_mean):
         # создаем регион-пересечение:
@@ -104,6 +104,7 @@ if __name__ == '__main__':
     pic = Pic()
     prediction_gen = DefaultPredictionsGenerator(pic)
     prediction_gen.draw()
+    plt.show()
 
     point = pic.get_center_point()
     radius = 4
@@ -111,6 +112,7 @@ if __name__ == '__main__':
     mean_in_cloud = pic.get_mean_color_in_point_cloud(points_cloud)
     prediction_gen.add_fact(points_cloud, real_mean=mean_in_cloud)
     prediction_gen.draw()
+    plt.show()
 
     point = point + Point(0,3)
     radius = 8
@@ -118,4 +120,7 @@ if __name__ == '__main__':
     mean_in_cloud = pic.get_mean_color_in_point_cloud(points_cloud)
     prediction_gen.add_fact(points_cloud, real_mean=mean_in_cloud)
     prediction_gen.draw()
+    plt.show()
+
+
 

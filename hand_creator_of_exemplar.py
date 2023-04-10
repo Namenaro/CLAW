@@ -3,6 +3,7 @@ from common_utils import Point
 
 import matplotlib.pyplot as plt
 import math
+import jsonpickle
 
 
 class HandGeneratedTraj:
@@ -21,8 +22,11 @@ class HandGeneratedTraj:
         self.points, self.radiuses = select_coord_on_img(self.pic.img, need_radiuses=True)
         self.radiuses = [radius] * len(self.points)
 
-    def draw(self):
-        pass
+    def save(self):
+        frozen = jsonpickle.encode(self)
+
+        with open("data_file1.json", "w") as write_file:
+            write_file.write(frozen)
 
 
 
@@ -76,11 +80,16 @@ def select_coord_on_img(img, need_radiuses):
     x, y = devcr.create_device()
     return x, y
 
-
+def restore_saved_traj():
+    with open("data_file1.json", "r") as read_file:
+        loaded = read_file.read()
+        thawed = jsonpickle.decode(loaded)
+        return thawed
 
 if __name__ == '__main__':
     pic = Pic()
     hand_creator_of_ex = HandGeneratedTraj(pic)
     hand_creator_of_ex.fill_traj_with_radiuses()
     print(str(hand_creator_of_ex.radiuses))
+    hand_creator_of_ex.save()
 
