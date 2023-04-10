@@ -36,6 +36,13 @@ class DefaultPredictionsGenerator:
         ax.imshow(self.pic.img, cmap=cm, alpha=0.1)
         return fig
 
+    def draw_to_ax(self, ax):
+        numpy_pic = np.zeros(shape=self.pic.img.shape)
+        new_pic = Pic(numpy_pic)
+        for _, region in self.regions_dict.items():
+            region.draw_to_pic(new_pic)
+        new_pic.draw_to_ax(ax)
+
     def add_fact(self, fact_points, fact_mean):
         region_ids, inners_points, outers_points = self._find_all_intersections(fact_points)
         means_of_intersected_regions = [self.regions_dict[reg_id].mean for reg_id in region_ids]
