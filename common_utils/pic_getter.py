@@ -92,6 +92,12 @@ class Pic:
             mass += self.get_bright_in_point(point)
         return mass/len(point_cloud)
 
+    def get_vals_of_point_cloud(self, point_cloud):
+        vals_cloud = []
+        for point in point_cloud:
+            vals_cloud.append(self.get_bright_in_point(point))
+        return vals_cloud
+
 
 if __name__ == '__main__':
     pic = Pic()
