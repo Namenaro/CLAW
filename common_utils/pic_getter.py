@@ -69,6 +69,10 @@ class Pic:
                 points.append(Point(x=x, y=y))
         return points
 
+    def get_num_points_in_vicitiny(self, radius): #TODO ужасно, но с радиусом 0 неочевидно...
+        points = self.get_point_cloud(Point(0,0), radius)
+        return len(points)
+
     def _gather_bio1_sample(self, sample_size=80):
         full_sample = self.img.ravel()
         S_1 = [random.choice(full_sample) for _ in range(sample_size)]

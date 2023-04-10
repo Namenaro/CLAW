@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from random import sample
 
 
 class Distr:
@@ -52,3 +53,7 @@ class Distr:
             return np.mean(self.sample)
         else:
             return (self.max + self.min) / 2
+
+
+    def sample(self, sample_size):
+        return sample(self.sample(), sample_size)
