@@ -32,8 +32,8 @@ class DefaultPredictionsGenerator:
         new_pic.draw_to_ax(ax)
 
         # фон
-        cm = plt.get_cmap('Greens')
-        ax.imshow(self.pic.img, cmap=cm, alpha=0.1)
+        #cm = plt.get_cmap('Greens')
+        #ax.imshow(self.pic.img, cmap=cm, alpha=0.1)
         return fig
 
     def add_fact(self, fact_points, fact_mean):
@@ -126,6 +126,11 @@ class DefaultPredictionsGenerator:
             if region.has_point(point):
                 return region.mean
 
+    def print_means(self):
+        str_means = ""
+        for reg_id, region in self.regions_dict.items():
+            str_means += str(reg_id) + ": " + str(region.mean) + ", "
+        return str_means
 
 class Region:
     def __init__(self, points, mean):
@@ -155,7 +160,7 @@ if __name__ == '__main__':
     radius = 4
     points_cloud = pic.get_point_cloud(point, radius=radius)
     mean_in_cloud = pic.get_mean_color_in_point_cloud(points_cloud)
-    prediction_gen.add_fact(points_cloud, real_mean=mean_in_cloud)
+    prediction_gen.add_fact(points_cloud, mean_in_cloud)
     prediction_gen.draw()
     plt.show()
 
@@ -163,6 +168,6 @@ if __name__ == '__main__':
     radius = 8
     points_cloud = pic.get_point_cloud(point, radius=radius)
     mean_in_cloud = pic.get_mean_color_in_point_cloud(points_cloud)
-    prediction_gen.add_fact(points_cloud, real_mean=mean_in_cloud)
+    prediction_gen.add_fact(points_cloud, mean_in_cloud)
     prediction_gen.draw()
     plt.show()

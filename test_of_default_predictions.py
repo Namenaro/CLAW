@@ -1,7 +1,7 @@
 from default_prediction_generator import DefaultPredictionsGenerator
 from common_utils import *
 from hand_creator_of_exemplar import HandGeneratedTraj, restore_saved_traj
-
+import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     logger = HtmlLogger("HAND_TEST1")
@@ -13,11 +13,13 @@ if __name__ == '__main__':
     #hand_creator_of_ex.fill_traj_with_radiuses()
     hand_creator_of_ex=restore_saved_traj()
 
-    logger.add_text(str(len(prediction_gen.regions_dict)) + " regions:")
+    logger.add_text(str(len(prediction_gen.regions_dict)) + " regions:" + prediction_gen.print_means())
     fig = prediction_gen.draw()
     logger.add_fig(fig)
 
     for i in range(len(hand_creator_of_ex.radiuses)):
+        if i==7:
+            print(0)
         radius = hand_creator_of_ex.radiuses[i]
         point = hand_creator_of_ex.points[i]
 
@@ -25,6 +27,10 @@ if __name__ == '__main__':
         mean = pic.get_mean_color_in_point_cloud(point_cloud)
         prediction_gen.add_fact(point_cloud, mean)
         fig = prediction_gen.draw()
-        logger.add_text(str(len(prediction_gen.regions_dict)) + " regions:")
+        logger.add_text(str(len(prediction_gen.regions_dict)) + " regions:" + prediction_gen.print_means())
+        fig.savefig("pic"+ str(i))
         logger.add_fig(fig)
+
+
+
 
