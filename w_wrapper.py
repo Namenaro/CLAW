@@ -2,6 +2,8 @@ from common_utils import Pic, Distr, HtmlLogger
 from default_prediction_generator import DefaultPredictionsGenerator
 from common_utils import Pic, Point
 
+import numpy as np
+
 import matplotlib.pyplot as plt
 class W_wrapper:
     def __init__(self, pic):
@@ -46,10 +48,10 @@ class W_wrapper:
 
 
     def get_maxes_w_distr(self, search_radius, old_pred, new_pred, pred_radius):
-        SAMPLE_SIZE = 40
+        SAMPLE_SIZE = 120
         sample_maxes = []
         for i in range(SAMPLE_SIZE):
-            sample1px = self.pic.distr.get_sample(sample_size=self.pic.get_num_points_in_vicitiny(search_radius))
+            sample1px = self.pic.distr.get_sample(sample_size=self.pic.get_num_points_in_vicitiny(search_radius+pred_radius))
             # обходим все пикслели и считаем однопиксельное w
             w_1ps = []
             for real_val in sample1px:
@@ -61,7 +63,7 @@ class W_wrapper:
             best_w1s = (sorted(w_1ps, reverse=True))[0:size_of_prediction]
             best_w1s_positive = [item for item in best_w1s if item >= 0]
             # из сумму выигрыша добавляем в sample_maxes
-            sample_maxes.append(sum(best_w1s_positive))
+            sample_maxes.append(sum(best_w1s))
         return sample_maxes # каждое число в семпле [- len(cloud), + len(cloud)]
 
     def entangle_real_w(self, sample_maxes_w, real_w, THEORETICAL_MAX_w):
@@ -73,20 +75,44 @@ class W_wrapper:
         return -p  # [-1,1]
 
 
-if __name__ == '__main__':
+# ТЕСТЫ ======
+def test_max_w_sampler():
     logger = HtmlLogger("HAND_TEST_w_maxes")
     pic = Pic()
     old_pred = pic.get_mean()
-    new_pred = 200
-    pred_radius = 4
+    new_pred = 250
+    pred_radius = 1
 
     wrapper = W_wrapper(pic)
-    print("max_w=" + str(wrapper.get_theoretical_max_w_disenatgled(pred_radius)))
-    for search_radius in range(1,12,2):
-        max_sample= wrapper.get_maxes_w_distr(search_radius, old_pred, new_pred, pred_radius)
+    max_w_wal = wrapper.get_theoretical_max_w_disenatgled(pred_radius)
+    print("max_w=" + str(max_w_wal))
+    radiuses = list(range(10, 18, 2))
+    expected_w_maxes = []
+    for search_radius in radiuses:
+        max_sample = wrapper.get_maxes_w_distr(search_radius, old_pred, new_pred, pred_radius)
+        expected_w_maxes.append(np.mean(max_sample))
         fig, ax = plt.subplots()
-        ax.hist(max_sample, range=[-1, 1])
-        logger.add_text("search_radius =  "+ str(search_radius))
+        ax.hist(max_sample, range=[-max_w_wal, max_w_wal], bins=50)
+        logger.add_text("search_radius =  " + str(search_radius))
         logger.add_fig(fig)
 
+    plt.plot(radiuses, expected_w_maxes)
+    plt.show()
 
+def test_w_ipx():
+    pic = Pic()
+    old_pred = pic.get_mean()
+    new_pred = 5
+    real_value = 10
+
+    distr = pic.distr
+    plt.hist(distr.sample, bins=100)
+    plt.show()
+    curr_profit = 1 - distr.get_p_of_event(real_value, old_pred)
+    new_profit = 1 - distr.get_p_of_event(real_value, new_pred)
+    w = new_profit - curr_profit
+    print(w)
+
+if __name__ == '__main__':
+    #test_max_w_sampler()
+    test_w_ipx()
