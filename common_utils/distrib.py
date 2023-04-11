@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from random import sample
+from random import choices
 
 
 class Distr:
@@ -55,5 +55,5 @@ class Distr:
             return (self.max + self.min) / 2
 
 
-    def sample(self, sample_size):
-        return sample(self.sample(), sample_size)
+    def get_sample(self, sample_size):
+        return choices(self.sample, k=sample_size)

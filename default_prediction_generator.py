@@ -42,6 +42,9 @@ class DefaultPredictionsGenerator:
         for _, region in self.regions_dict.items():
             region.draw_to_pic(new_pic)
         new_pic.draw_to_ax(ax)
+        # фон
+        cm = plt.get_cmap('Greens')
+        ax.imshow(self.pic.img, cmap=cm, alpha=0.07)
 
     def add_fact(self, fact_points, fact_mean):
         region_ids, inners_points, outers_points = self._find_all_intersections(fact_points)

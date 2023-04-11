@@ -35,7 +35,7 @@ class CoordSelector:
     def __init__(self, image, need_radiuses=False):
         self.image = image
         self.need_radiuses = need_radiuses
-        self.r = 4
+        self.r = 1
 
         self.fig = plt.figure()
         self.fig.canvas.mpl_connect('button_press_event', self.onclick)

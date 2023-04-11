@@ -73,8 +73,10 @@ class Pic:
         points = self.get_point_cloud(Point(0,0), radius)
         return len(points)
 
-    def _gather_bio1_sample(self, sample_size=80):
+    def _gather_bio1_sample(self, sample_size=None):
         full_sample = self.img.ravel()
+        if sample_size is None:
+            return full_sample
         S_1 = [random.choice(full_sample) for _ in range(sample_size)]
         return S_1
 

@@ -22,6 +22,7 @@ def handli_fill_facts(pic):
     return prediction_gen
 
 def handli_measure_some_facts(pic):
+    # факт для которого мы будем мерить запутанную ценность (нужен один клик)
     hand_creator_of_ex = HandGeneratedTraj(pic)
     hand_creator_of_ex.fill_traj_with_radiuses()
     centers, radiuses = hand_creator_of_ex.points, hand_creator_of_ex.radiuses
@@ -38,6 +39,7 @@ def test_disentangled():
 
     # накликиваем факты, полезность которых будем мерить
     centers, means, radiuses = handli_measure_some_facts(pic)
+    print("Кликаем с радиусами несколько фактов, полезность которых будем мерять в данном контесте:")
     N = len(centers)
 
     w_wrapper = W_wrapper(pic)
